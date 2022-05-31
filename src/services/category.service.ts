@@ -1,6 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { CreateCategoryDto } from "../dtos/category/create-category.dto";
 import { CreatedCategoryDto } from "../dtos/category/created-category.dto";
+import { UpdateCategoryDto } from "../dtos/category/update-category.dto";
 import { CategoryEntity } from "../entities/category.entity";
 import { HttpException } from "../handler-exceptions/http-exception.provider";
 import { HttpStatus } from "../utils/enums/http-status.enum";
@@ -26,9 +27,13 @@ export class CategoryService {
 
   async show(id: string): Promise<CreatedCategoryDto> {
     const category = await this.categoryRepository.findOne({ where: { id } });
-    if (category)
-      return new CreatedCategoryDto({ id: category.id, name: category.name });
-    else return new CategoryEntity();
+    if (!category) {
+      throw new HttpException(
+        "Categoria não encontrada!",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return new CreatedCategoryDto({ id: category.id, name: category.name });
   }
 
   async create({ name }: CreateCategoryDto): Promise<CreatedCategoryDto> {
@@ -44,12 +49,38 @@ export class CategoryService {
     }
   }
 
-  async update(id: string, name: string): Promise<void> {
+  async update(
+    id: string,
+    { name }: Partial<UpdateCategoryDto>
+  ): Promise<void> {
+    const oldCategory = await this.categoryRepository.findOne({
+      where: { id },
+    });
+    if (!oldCategory) {
+      throw new HttpException(
+        "Categoria não encontrado!",
+        HttpStatus.NOT_FOUND
+      );
+    }
     try {
-      await this.categoryRepository.update(id, { name });
+      const updateCategory = this.categoryRepository.merge(oldCategory, {
+        name,
+      });
+      await this.categoryRepository.save(updateCategory);
     } catch (error) {
       throw new HttpException(
         "Houve um erro ao atualizar categoria!",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    try {
+      await this.categoryRepository.delete(id);
+    } catch (error) {
+      throw new HttpException(
+        "Houve um erro ao deletar categoria!",
         HttpStatus.BAD_REQUEST
       );
     }
