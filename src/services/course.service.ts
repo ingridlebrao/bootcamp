@@ -115,7 +115,7 @@ export class CourseService {
       await this.courseRepository.save(updateProduct);
     } catch (error) {
       throw new HttpException(
-        "Houve um erro ao atulizar produto!",
+        "Houve um erro ao atualizar curso!",
         HttpStatus.BAD_REQUEST
       );
     }
