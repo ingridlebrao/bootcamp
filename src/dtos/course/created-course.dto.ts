@@ -18,10 +18,7 @@ export class CreatedCourseDto extends CreateCourseDto {
     this.name = name;
     this.description = description;
     this.value = value;
-    this.disponibility =
-      typeof disponibility === "string" && disponibility === "true"
-        ? true
-        : false;
+    this.disponibility = disponibility;
     this.image = image;
     this.categoryId = category.id;
   }

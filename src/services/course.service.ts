@@ -26,10 +26,13 @@ export class CourseService {
       const createCourse = this.courseRepository.create({
         category: { id: categoryId },
         description,
-        disponibility,
+        disponibility:
+          typeof disponibility === "string" && disponibility === "true"
+            ? true
+            : false,
         image,
         name,
-        value,
+        value: Number(value),
       });
       const saveCourse = await this.courseRepository.save(createCourse);
       return new CreatedCourseDto(saveCourse);
