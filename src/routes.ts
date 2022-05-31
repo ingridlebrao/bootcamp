@@ -7,6 +7,7 @@ import { CourseController } from "./controllers/course.controller";
 import { CreateCategoryDto } from "./dtos/category/create-category.dto";
 import { UpdateCategoryDto } from "./dtos/category/update-category.dto";
 import { CreateCourseDto } from "./dtos/course/create-course.dto";
+import { UpdateCourseDto } from "./dtos/course/update-course.dto";
 import { validator } from "./middlewares";
 import { CategoryService } from "./services/category.service";
 import { CourseService } from "./services/course.service";
@@ -19,7 +20,7 @@ const categoryController = new CategoryController(
 
 const courseController = new CourseController(new CourseService(AppDataSource));
 
-routes.get("/", (request: Request, response: Response) => {
+routes.get("/", (_request: Request, response: Response) => {
   return response.json({ status: "success", version: "1.0.0" }).status(200);
 });
 
@@ -97,6 +98,18 @@ routes.get(
   "/courses/:id",
   (request: Request, response: Response, next: NextFunction) => {
     courseController.show(request, response).catch((error: Error) => {
+      next(error);
+    });
+  }
+);
+
+routes.put(
+  "/courses/:id",
+  multer(multerConfig).single("image"),
+  UpdateCourseDto.validators(),
+  validator,
+  (request: Request, response: Response, next: NextFunction) => {
+    courseController.update(request, response).catch((error: Error) => {
       next(error);
     });
   }
