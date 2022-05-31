@@ -42,17 +42,8 @@ export class CategoryController {
     return response.status(HttpStatus.OK).json(category);
   }
 
-  async update(request: Request, response: Response) {
-    const data = request.body;
-    const { id } = request.params;
-
-    categories = categories.map((category: ICategory) => {
-      if (category.id == id) {
-        category = { ...category, name: data.name, updated_at: new Date() };
-      }
-      return category;
-    });
-
+  async update({ body: category, params }: Request, response: Response) {
+    await this.categoryService.update(params.id, category?.name);
     return response.status(HttpStatus.NO_CONTENT).json();
   }
 

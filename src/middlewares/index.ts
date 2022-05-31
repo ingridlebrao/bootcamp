@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
+import { MulterError } from "multer";
 import { ErrorHandler } from "../handler-exceptions/error-handler";
 import { HttpStatus } from "../utils/enums/http-status.enum";
 
@@ -34,6 +35,10 @@ export function errorHandler(
     }
     errorDto.message = error.message;
     return response.status(errorDto.statusCode).json(errorDto);
+  }
+  if (error instanceof MulterError) {
+    errorDto.message = error.message;
+    error.statusCode = HttpStatus.BAD_REQUEST;
   }
   errorDto.message = error.message;
   errorDto.statusCode = error.statusCode;
