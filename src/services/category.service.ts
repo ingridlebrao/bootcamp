@@ -27,7 +27,7 @@ export class CategoryService {
   async show(id: string): Promise<CreatedCategoryDto> {
     const category = await this.categoryRepository.findOne({ where: { id } });
     if (category)
-      return new CreatedCategoryDto({ id: category?.id, name: category.name });
+      return new CreatedCategoryDto({ id: category.id, name: category.name });
     else return new CategoryEntity();
   }
 
@@ -39,6 +39,17 @@ export class CategoryService {
     } catch (error) {
       throw new HttpException(
         "Houve um erro ao adicionar categoria!",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
+  async update(id: string, name: string): Promise<void> {
+    try {
+      await this.categoryRepository.update(id, { name });
+    } catch (error) {
+      throw new HttpException(
+        "Houve um erro ao atualizar categoria!",
         HttpStatus.BAD_REQUEST
       );
     }

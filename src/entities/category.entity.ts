@@ -1,10 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { CourseEntity } from "./course.entity";
 
-@Entity({ name: 'categories' })
+@Entity({ name: "categories" })
 export class CategoryEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: "varchar", nullable: false })
   name!: string;
+
+  @OneToMany(() => CourseEntity, (course) => course.category)
+  courses?: CourseEntity[];
 }
