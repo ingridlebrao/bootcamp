@@ -2,8 +2,9 @@
   "name": "bootcamp-api",
   "version": "1.0.0",
   "description": "Projeto backend da trilha de fullstack do bootcamp Use Academy",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
+    "start": "tsc && node dist/server.js",
     "dev": "ts-node-dev --respawn --inspect --ignore-watch node_modules src/server.ts",
     "lint:fix": "eslint . --fix"
   },
